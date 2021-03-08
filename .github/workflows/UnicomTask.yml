@@ -1,0 +1,33 @@
+name: UnicomTask
+
+on:
+  push:
+    branches: main
+  gollum:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 23 * * *'
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+        
+    - name: npm install
+      run: |
+           npm install
+    - name: "Run Unicom daily task"
+      run: |
+           node index.js unicom --user=${user} --password=${password} --appid=${appid}
+      env:
+           user: ${{ secrets.unicom_user }}
+           password: ${{ secrets.unicom_password }}
+           appid: ${{ secrets.unicom_appid }}          
+  
